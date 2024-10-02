@@ -1,0 +1,311 @@
+{
+    "state": {
+        "global_time": "200.0",
+        "ode": {
+            "_type": "process",
+            "address": "local:ode-copasi",
+            "config": {
+                "model_file": "/Users/alexanderpatrie/Desktop/repos/biosimulator-processes/test_suite/examples/sbml-core/Mitchell2013/BIOMD0000000498_url.xml"
+            },
+            "inputs": {
+                "time": [
+                    "time_store"
+                ],
+                "species_concentrations": [
+                    "species_concentrations_store"
+                ]
+            },
+            "outputs": {
+                "time": [
+                    "time_store"
+                ],
+                "species_concentrations": [
+                    "species_concentrations_store"
+                ],
+                "reaction_fluxes": [
+                    "reaction_fluxes_store"
+                ]
+            },
+            "interval": 1.0,
+            "_inputs": {
+                "species_concentrations": {
+                    "Hamp": "float",
+                    "Fe-FT": "float",
+                    "FT": "float",
+                    "FT1": "float",
+                    "HO-1": "float",
+                    "Heme": "float",
+                    "LIP": "float",
+                    "Fpn": "float",
+                    "IRP": "float",
+                    "Tf-Fe_intercell": "float",
+                    "TfR": "float",
+                    "Tf-Fe-TfR1": "float",
+                    "HFE": "float",
+                    "HFE-TfR": "float",
+                    "Tf-Fe-TfR2": "float",
+                    "2(Tf-Fe)-TfR1": "float",
+                    "2HFE-TfR": "float",
+                    "2HFE-TfR2": "float",
+                    "2(Tf-Fe)-TfR2": "float",
+                    "TfR2": "float",
+                    "Heme_intercell": "float"
+                },
+                "time": "float"
+            },
+            "_outputs": {
+                "species_concentrations": {
+                    "Hamp": "float",
+                    "Fe-FT": "float",
+                    "FT": "float",
+                    "FT1": "float",
+                    "HO-1": "float",
+                    "Heme": "float",
+                    "LIP": "float",
+                    "Fpn": "float",
+                    "IRP": "float",
+                    "Tf-Fe_intercell": "float",
+                    "TfR": "float",
+                    "Tf-Fe-TfR1": "float",
+                    "HFE": "float",
+                    "HFE-TfR": "float",
+                    "Tf-Fe-TfR2": "float",
+                    "2(Tf-Fe)-TfR1": "float",
+                    "2HFE-TfR": "float",
+                    "2HFE-TfR2": "float",
+                    "2(Tf-Fe)-TfR2": "float",
+                    "TfR2": "float",
+                    "Heme_intercell": "float"
+                },
+                "reaction_fluxes": {
+                    "Fpn Export": "float",
+                    "TfR1 expression": "float",
+                    "TfR1 degradation": "float",
+                    "Ferroportin Expression": "float",
+                    "IRP expresion": "float",
+                    "IRP degradation": "float",
+                    "Fpn degradation": "float",
+                    "HFE degradation": "float",
+                    "HFE expression": "float",
+                    "TfR2 expression": "float",
+                    "TfR2 degradation": "float",
+                    "Hepcidin expression": "float",
+                    "Hepcidin degradation": "float",
+                    "HFE TfR1 binding": "float",
+                    "HFE TfR1 release": "float",
+                    "TfR1 binding": "float",
+                    "TfR1 release": "float",
+                    "HFE TfR2 binding": "float",
+                    "HFE TfR2 release": "float",
+                    "TfR2 binding": "float",
+                    "TfR2 release": "float",
+                    "TfR1 binding 2": "float",
+                    "TfR1 release 2": "float",
+                    "HFE TfR1 binding 2": "float",
+                    "HFE TfR1 release 2": "float",
+                    "TfR2 binding 2": "float",
+                    "TfR2 release 2": "float",
+                    "TfR1 iron internalisation": "float",
+                    "TfR2 iron internalisation": "float",
+                    "outFlow": "float",
+                    "Ferritin Iron binding": "float",
+                    "Ferritin Iron release": "float",
+                    "Ferritin Iron internalisation": "float",
+                    "Ferritin internalised iron release": "float",
+                    "ferritin expression": "float",
+                    "Ferritin Degredation Full": "float",
+                    "Ferritin Degredation Full Iron Release": "float",
+                    "HFETfR degradation": "float",
+                    "HFETfR2 degradation": "float",
+                    "Heme uptake": "float",
+                    "Heme export": "float",
+                    "HO1 exp": "float",
+                    "HO1 Deg": "float",
+                    "Heme oxygenation": "float"
+                },
+                "time": "float"
+            }
+        },
+        "time_store": "200.0",
+        "species_concentrations_store": {
+            "Hamp": "1.0041087798821893e-06",
+            "Fe-FT": "3.167104918033167e-08",
+            "FT": "3.6775446524707905e-09",
+            "FT1": "0.00024885285470469833",
+            "HO-1": "7.1688700115305175e-09",
+            "Heme": "1.0728640574400185e-06",
+            "LIP": "0.006377046013420486",
+            "Fpn": "1.6391432059023967e-05",
+            "IRP": "0.00023282027459837977",
+            "Tf-Fe_intercell": "0.0010050000000000022",
+            "TfR": "6.194453416223466e-06",
+            "Tf-Fe-TfR1": "4.023073433645425e-05",
+            "HFE": "8.278346605461618e-06",
+            "HFE-TfR": "3.1832641798004134e-06",
+            "Tf-Fe-TfR2": "0.00034272236087435",
+            "2(Tf-Fe)-TfR1": "2.9073339468444272e-05",
+            "2HFE-TfR": "1.7778292529647165e-06",
+            "2HFE-TfR2": "1.2699646817289894e-05",
+            "2(Tf-Fe)-TfR2": "0.00013841728609142185",
+            "TfR2": "0.00010655010042370878",
+            "Heme_intercell": "2.0100000000000004e-05"
+        },
+        "reaction_fluxes_store": {
+            "Fpn Export": "0.0002710804417349838",
+            "TfR1 expression": "6.472293165535736e-10",
+            "TfR1 degradation": "5.184757509379043e-11",
+            "Ferroportin Expression": "1.631941319750079e-07",
+            "IRP expresion": "3.4868477650211765e-10",
+            "IRP degradation": "3.718139785336126e-09",
+            "Fpn degradation": "1.893946339267458e-09",
+            "HFE degradation": "5.313042851385268e-10",
+            "HFE expression": "4.717268999999995e-09",
+            "TfR2 expression": "6.0300000000000174e-09",
+            "TfR2 degradation": "1.1685344045195604e-09",
+            "Hepcidin expression": "5.62979732367287e-10",
+            "Hepcidin degradation": "5.623009167340256e-10",
+            "HFE TfR1 binding": "3.4392472972384384e-07",
+            "HFE TfR1 release": "2.546611343840329e-07",
+            "TfR1 binding": "3.4392472972384384e-07",
+            "TfR1 release": "2.546611343840329e-07",
+            "HFE TfR2 binding": "1.3127132913454807e-07",
+            "HFE TfR2 release": "2.2859364271121823e-08",
+            "TfR2 binding": "1.3127132913454807e-07",
+            "TfR2 release": "2.2859364271121823e-08",
+            "TfR1 binding 2": "2.4420055742227728e-05",
+            "TfR1 release 2": "1.0277425502095048e-07",
+            "HFE TfR1 binding 2": "1.4647336813822e-07",
+            "HFE TfR1 release 2": "1.4222634023717744e-07",
+            "TfR2 binding 2": "0.00011926738158427387",
+            "TfR2 release 2": "3.322014866194124e-06",
+            "TfR1 iron internalisation": "2.422681377905461e-05",
+            "TfR2 iron internalisation": "0.00011534312449998191",
+            "outFlow": "2.550818405368196e-06",
+            "Ferritin Iron binding": "0.004156601378586066",
+            "Ferritin Iron release": "0.000725963789311563",
+            "Ferritin Iron internalisation": "0.003420473311475822",
+            "Ferritin internalised iron release": "0.0034195783306757554",
+            "ferritin expression": "2.1531297002135626e-11",
+            "Ferritin Degredation Full": "4.623784216922364e-14",
+            "Ferritin Degredation Full Iron Release": "2.9936998420975193e-09",
+            "HFETfR degradation": "1.488043084731468e-12",
+            "HFETfR2 degradation": "1.0629604386071649e-09",
+            "Heme uptake": "1.6613429256594675e-06",
+            "Heme export": "1.3135618471873999e-06",
+            "HO1 exp": "3.622993574655669e-13",
+            "HO1 Deg": "2.300490386700145e-13",
+            "Heme oxygenation": "3.392246992725422e-07"
+        },
+        "fba": {
+            "_type": "process",
+            "address": "local:fba",
+            "config": {
+                "model_file": "/Users/alexanderpatrie/Desktop/repos/biosimulator-processes/test_suite/examples/sbml-core/Mitchell2013/BIOMD0000000498_url.xml",
+                "objective": {
+                    "domain": "",
+                    "name": "",
+                    "scaling_factor": "0.0"
+                }
+            },
+            "inputs": {
+                "reaction_fluxes": [
+                    "reaction_fluxes_store"
+                ]
+            },
+            "outputs": {
+                "fluxes": [
+                    "fluxes_store"
+                ]
+            },
+            "interval": 1.0,
+            "_inputs": {
+                "reaction_fluxes": "tree[float]"
+            },
+            "_outputs": {
+                "fluxes": "tree[float]"
+            }
+        },
+        "fluxes_store": {
+            "EX_species_43": "-0.17600617944207908",
+            "EX_species_11": "0.19148758530640764",
+            "Fpn Export": "-29.05256023131426",
+            "TfR1 expression": "-26.21672449500687",
+            "TfR1 degradation": "96.83254618424793",
+            "Ferroportin Expression": "129.0589884777921",
+            "IRP expresion": "129.6102650515511",
+            "IRP degradation": "28.084185724467652",
+            "Fpn degradation": "137.78822390250346",
+            "HFE degradation": "137.8052439158979",
+            "HFE expression": "27.74241103036894",
+            "TfR2 expression": "31.462910329879733",
+            "TfR2 degradation": "69.80997005364863",
+            "Hepcidin expression": "133.09417837717967",
+            "Hepcidin degradation": "113.84599175059826",
+            "HFE TfR1 binding": "100.0058232539422",
+            "HFE TfR1 release": "100.05889585020333",
+            "TfR1 binding": "59.78849925219892",
+            "TfR1 release": "59.65149358663168",
+            "HFE TfR2 binding": "115.60134374599296",
+            "HFE TfR2 release": "88.0508971031509",
+            "TfR2 binding": "47.382973763800834",
+            "TfR2 release": "27.943319872715257",
+            "TfR1 binding 2": "36.278757407604736",
+            "TfR1 release 2": "0.6821668294293819",
+            "HFE TfR1 binding 2": "79.24202618631855",
+            "HFE TfR1 release 2": "51.89396566913228",
+            "TfR2 binding 2": "28.826712519738983",
+            "TfR2 release 2": "28.635245255234942",
+            "TfR1 iron internalisation": "42.37379252684982",
+            "TfR2 iron internalisation": "6.968669213178659",
+            "outFlow": "27.561657887025184",
+            "Ferritin Iron binding": "36.18501448204607",
+            "Ferritin Iron release": "86.38363377657583",
+            "Ferritin Iron internalisation": "145.30297144738952",
+            "Ferritin internalised iron release": "101.97170322043273",
+            "ferritin expression": "44.086065029725674",
+            "Ferritin Degredation Full": "44.086065029725674",
+            "Ferritin Degredation Full Iron Release": "134.83037066263896",
+            "HFETfR degradation": "134.85754179718026",
+            "HFETfR2 degradation": "0.14931352939404263",
+            "Heme uptake": "0.6522149482827027",
+            "Heme export": "20.091889160170652",
+            "HO1 exp": "130.64421421436165",
+            "HO1 Deg": "103.83595227146465",
+            "Heme oxygenation": "40.05342397886885"
+        },
+        "emitter": {
+            "_type": "step",
+            "address": "local:ram-emitter",
+            "config": {
+                "emit": {
+                    "time": "float",
+                    "species_concentrations": "tree[float]",
+                    "reaction_fluxes": "tree[float]",
+                    "fluxes": "tree[float]"
+                }
+            },
+            "inputs": {
+                "time": [
+                    "time_store"
+                ],
+                "species_concentrations": [
+                    "species_concentrations_store"
+                ],
+                "reaction_fluxes": [
+                    "reaction_fluxes_store"
+                ],
+                "fluxes": [
+                    "fluxes_store"
+                ]
+            },
+            "_inputs": {
+                "time": "float",
+                "species_concentrations": "tree[float]",
+                "reaction_fluxes": "tree[float]",
+                "fluxes": "tree[float]"
+            },
+            "_outputs": {},
+            "outputs": {}
+        }
+    }
+}

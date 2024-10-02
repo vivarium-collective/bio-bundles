@@ -8,8 +8,11 @@ packages = [{include = "bundles"}]
 
 [tool.poetry.dependencies]
 python = ">=3.10"
-biosimulators-processes = {version = "^0.2.5", extras = ["utc"]}
+process-bigraph = "*"
 jupyterlab = "*"
+copasi-basico = "*"
+cobra = "*"
+seaborn = "*"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.1"
