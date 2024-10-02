@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "bio-bundles"
+version = "0.0.1"
+description = "Commonly grouped biological composites"
+authors = ["Alex Patrie <alexanderpatrie@gmail.com>"]
+readme = "README.md"
+packages = [{include = "bundles"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+biosimulators-processes = {version = "^0.2.5", extras = ["utc"]}
+jupyterlab = "*"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.1"
+mypy = "^1.10.0"
+flake8 = "^7.0.0"
+
+[tool.pytest.ini_options]
+testpaths = ["bundles"]
+addopts = "--ignore=setup.py"
+python_files = "*.py"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
