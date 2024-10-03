@@ -1,0 +1,106 @@
+# Smoldyn configuration file to model the Labile Iron Pool (LIP)
+# Units are micron, second
+
+define D_Fe2+     7e-12      # Diffusion coefficient for Fe2+ (um^2/s)
+define D_Ferritin 0.0        # Diffusion coefficient for Ferritin (um^2/s)
+define D_Ferritin_Fe2+ 0.0   # Diffusion coefficient for bound Ferritin_Fe2+ (um^2/s)
+
+define BINDING_RADIUS 0.01   # Binding radius for Fe2+ and Ferritin interaction (um)
+define BINDING_RATE   1e7    # Reaction rate for Fe2+ binding to Ferritin (s^-1)
+
+define CELL_RADIUS   0.5     # Cell radius (um)
+define CELL_LENGTH   2       # Half of the cell length (um)
+define CELL_LENGTH2  1.5     # Half of the cell length minus radius (um)
+
+define NUM_FE2+      100     # Number of Fe2+ ions
+define NUM_FERRITIN  10      # Number of Ferritin molecules
+
+define TIME_STOP     10      # Stopping time (seconds)
+define TIME_STEP     1e-6    # Time step (seconds)
+
+random_seed 1
+
+dim 3
+boundaries 0 -CELL_LENGTH CELL_LENGTH
+boundaries 1 -CELL_RADIUS CELL_RADIUS
+boundaries 2 -CELL_RADIUS CELL_RADIUS
+frame_thickness 0
+time_start 0
+time_stop TIME_STOP
+time_step TIME_STEP
+
+accuracy 5
+molperbox 4
+
+# Define species
+species Fe2+        # Iron ion (Fe2+)
+species Ferritin    # Ferritin protein
+species Ferritin_Fe2+  # Iron-bound Ferritin
+
+# Diffusion coefficients
+difc Fe2+         D_Fe2+
+difc Ferritin     D_Ferritin
+difc Ferritin_Fe2+ D_Ferritin_Fe2+
+
+# Visual properties
+color Fe2+         0 1 0    # Fe2+ ions are green
+color Ferritin     1 0 0    # Ferritin is red
+color Ferritin_Fe2+ 0 0 1   # Iron-bound Ferritin is blue
+display_size Fe2+         2
+display_size Ferritin     4
+display_size Ferritin_Fe2+ 4
+
+# Initial placement of Fe2+ and Ferritin molecules
+# Define the number and positions of molecules
+# mol Fe2+        NUM_FE2+  # Defining 100 Fe2+ ions
+# molpos Fe2+     uniform 0.8 0.8 0.8  # Spread Fe2+ ions randomly within the cytoplasm
+# mol Ferritin    NUM_FERRITIN  # Defining 10 Ferritin molecules
+# molpos Ferritin uniform 0.5 0.5 0.5  # Place Ferritin randomly within the cytoplasm
+
+# Define molecules
+molecule_lists list1 list2 list3
+mol_list Fe2+ list1
+mol_list Ferritin list2
+mol_list Ferritin_Fe2+ list3
+
+# Spatial configuration
+start_surface membrane
+action both all reflect
+# rate Fe2+ fsoln front D_Fe2+
+polygon both edge
+panel cylinder -L_PARAM2 0 0 L_PARAM2 0 0 -R 20 10 cyl0
+panel hemi -L_PARAM2 0 0 -R 1 0 0 20 5 hemi0
+panel hemi L_PARAM2 0 0 -R -1 0 0 20 5 hemi1
+neighbors cyl0 hemi0 hemi1
+neighbors hemi0 cyl0
+neighbors hemi1 cyl0
+end_surface
+
+start_compartment inside
+surface membrane
+point 0 0 0
+end_compartment
+
+# Reactions
+reaction bind_ferritin Fe2+ + Ferritin -> Ferritin_Fe2+ 1e7    # binding reaction where Fe²⁺ binds to Ferritin
+reaction release_ferritin Ferritin_Fe2+ -> Fe2+ + Ferritin     #  Iron release from Ferritin
+product_placement release_ferritin unbindrad 0.01
+# binding_radius bind_ferritin BINDING_RADIUS
+# rate bind_ferritin BINDING_RATE
+
+ifundefine SATURATED_FERRITIN
+  mol 100 Fe2+ 0.8 0.8 0.8
+  # mol Fe2+ 100  # Specify the species and number of molecules
+  # molpos Fe2+ uniform 0.8 0.8 0.8  # Spread Fe2+ ions randomly within the cytoplasm
+else
+  mol 100 Fe2+ 0.5 0.5 0.5
+  # molpos Fe2+ uniform 0.5 0.5 0.5  # Localize Fe2+ ions near ferritin or a specific region
+endif
+compartment_mol 10 Ferritin cytoplasm
+
+# Output settings
+output_files modelout.txt
+cmd i 0 TIME_STOP 1 executiontime modelout.txt
+cmd i 0 TIME_STOP 1 listmols modelout.txt
+
+end_file
