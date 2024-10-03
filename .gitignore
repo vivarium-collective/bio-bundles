@@ -1,3 +1,5 @@
 .idea
 __pycache__
 *.pyc
+lip.txt
+lip_out.txt
