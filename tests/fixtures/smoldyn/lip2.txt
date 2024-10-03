@@ -1,0 +1,73 @@
+# Smoldyn configuration file to model the Labile Iron Pool
+# Units: micron, second
+
+
+#Param definitions
+#=================
+define D_Fe2_ION 7e-12    #Diffusion coefficient for Fe2+ (um^2/s)
+define D_Ferritin 0.0    #Diffusion coefficient for Ferritin (um^2/s)
+define D_Ferritin_Fe2_ION 0.0   #Diffusion coefficient for bound Ferritin_Fe2+ (um^2/s)
+define SIGMA_D_Fe2_ION 1000    #Fe2 binding coeff.
+define SIGMA_D_Ferritin 50    #Ferritin release coeff.
+define BINDING_RADIUS 0.01    #Binding radius for Fe2+ and Ferritin interaction (um)
+define BINDING_RATE   1e7    #Reaction rate for Fe2+ binding to Ferritin (s^-1)
+define CELL_RADIUS   0.5    #Cell radius (um)
+define CELL_LENGTH   2    #Half of the cell length (um)
+define CELL_LENGTH2  1.5    #Half of the cell length minus radius (um)
+define NUM_FE2_ION      100    #Number of Fe2+ ions
+define NUM_FERRITIN  10    #Number of Ferritin molecules
+define TIME_STOP     10    #Stopping time (seconds)
+define TIME_STEP     0.002    #Time step (s) <- ms
+
+
+#Simulation setup
+#================
+random_seed 1
+dim 3
+boundaries 0 -CELL_LENGTH CELL_LENGTH
+boundaries 1 -CELL_RADIUS CELL_RADIUS
+boundaries 2 -CELL_RADIUS CELL_RADIUS
+frame_thickness 0
+time_start 0
+time_stop TIME_STOP
+time_step TIME_STEP
+accuracy 5
+molperbox 4
+
+
+#Define species
+#==============
+species Fe2_ION        #Iron ion (Fe2+)
+species Ferritin    #Ferritin protein
+species Ferritin_Fe2_ION  #Iron-bound Ferritin
+
+
+#Define molecules
+#================
+molecule_lists list1 list2 list3
+mol_list Fe2_ION(solution) list1
+mol_list Ferritin(solution) list2
+mol_list Ferritin_Fe2_ION(solution) list3
+
+
+#Diffusion coefficients
+#======================
+difc Fe2_ION(solution) D_Fe2_ION
+difc Ferritin(solution) D_Ferritin
+difc Ferritin_Fe2_ION(solution) D_Ferritin_Fe2_ION
+
+
+#Visual properties
+#=================
+color Fe2_ION(solution) green  #0 1 0    Fe2+ ions are green
+color Ferritin(solution) red  #1 0 0    Ferritin is red
+color Ferritin_Fe2_ION(solution) blue  #0 0 1   Iron-bound Ferritin is blue
+display_size Fe2_ION(solution) 2  #TODO: adjust this
+display_size Ferritin(solution) 4
+display_size Ferritin_Fe2_ION(solution) 4
+
+
+#Reactions
+#=========
+reaction bind_ferritin Fe2_ION + Ferritin -> Ferritin_Fe2_ION SIGMA_D_Fe2_ION  #binding reaction where Fe²⁺ binds to Ferritin
+reaction release_ferritin Ferritin_Fe2_ION -> Fe2_ION + Ferritin SIGMA_D_Ferritin  #Iron release from Ferritin
