@@ -13,6 +13,7 @@ jupyterlab = "*"
 copasi-basico = "*"
 cobra = "*"
 seaborn = "*"
+simulariumio = "*"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.1"

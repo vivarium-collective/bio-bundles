@@ -3,3 +3,4 @@ __pycache__
 *.pyc
 lip.txt
 lip_out.txt
+lip_counts_out.txt

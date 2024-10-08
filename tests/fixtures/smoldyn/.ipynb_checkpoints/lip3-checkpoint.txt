@@ -1,0 +1,183 @@
+# Smoldyn configuration file for modeling reactions within a liver cell
+
+
+# Param setup
+# ===========
+
+# Bimolecular reaction definitions (second-order rate constants)
+define SIGMA_Fpn_Export     1e6   # Fpn_Export (LIP + LIP → Tf-Fe_intercell) (um^3/s)
+define SIGMA_HFE_TfR1_binding 5e5  # HFE_TfR1_binding (HFE + TfR → HFE-TfR) (um^3/s)
+define SIGMA_TfR1_binding    1e6   # TfR1_binding (Tf-Fe_intercell + TfR → Tf-Fe-TfR1) (um^3/s)
+define SIGMA_HFE_TfR2_binding 1e6  # HFE_TfR2_binding (2 HFE + TfR2 → 2HFE-TfR2) (um^3/s)
+define SIGMA_TfR2_binding    1e6   # TfR2_binding (Tf-Fe_intercell + TfR2 → Tf-Fe-TfR2) (um^3/s)
+define SIGMA_Ferritin_Iron_Binding 5e6  # Ferritin_Iron_Binding (LIP + FT → Fe-FT) (um^3/s)
+
+# Unimolecular reaction definitions (first-order rate constants)
+define SIGMA_TfR1_expression   0.01   # TfR1_expression (TfR) (s^-1)
+define SIGMA_TfR1_degradation  0.001  # TfR1_degradation (TfR →) (s^-1)
+define SIGMA_Ferroportin_Expression 0.01  # Ferroportin_Expression (Fpn) (s^-1)
+define SIGMA_IRP_expression    0.01   # IRP_expression (IRP) (s^-1)
+define SIGMA_IRP_degradation   0.001  # IRP_degradation (IRP →) (s^-1)
+define SIGMA_Fpn_degradation   0.001  # Fpn_degradation (Fpn →) (s^-1)
+define SIGMA_HFE_degradation   0.001  # HFE_degradation (HFE →) (s^-1)
+define SIGMA_HFE_expression    0.01   # HFE_expression (HFE) (s^-1)
+define SIGMA_TfR2_expression   0.01   # TfR2_expression (TfR2) (s^-1)
+define SIGMA_TfR2_degradation  0.001  # TfR2_degradation (TfR2 →) (s^-1)
+define SIGMA_Hamp_degradation  0.001  # Hamp_degradation (Hamp →) (s^-1)
+define SIGMA_Hamp_expression   0.01   # Hamp_expression (Hamp) (s^-1)
+define SIGMA_TfR1_iron_internalisation 0.01  # TfR1_iron_internalisation (2(Tf-Fe)-TfR1 → 4 LIP + TfR) (s^-1)
+define SIGMA_TfR2_iron_internalisation 0.01  # TfR2_iron_internalisation (2(Tf-Fe)-TfR2 → 4 LIP + TfR2) (s^-1)
+define SIGMA_Ferritin_Iron_Release 0.01  # Ferritin_Iron_Release (Fe-FT → LIP + FT) (s^-1)
+define SIGMA_Ferritin_Iron_Internalisation 0.01  # Ferritin_Iron_Internalisation (Fe-FT → FT1 + FT) (s^-1)
+define SIGMA_Ferritin_Internalised_Iron_Release 0.01  # Ferritin_Internalised_Iron_Release (FT1 → LIP) (s^-1)
+define SIGMA_ferritin_expression 0.01  # ferritin_expression (FT) (s^-1)
+define SIGMA_Ferritin_Degradation 0.001  # Ferritin_Degradation (FT →) (s^-1)
+define SIGMA_Ferritin_Degradation_Full_Iron_Release 0.01  # Ferritin_Degradation_Full_Iron_Release (FT1 → LIP) (s^-1)
+define SIGMA_Heme_Uptake 0.01  # Heme_Uptake (Heme_intercell → Heme) (s^-1)
+define SIGMA_Heme_Export 0.01  # Heme_Export (Heme → Heme_intercell) (s^-1)
+define SIGMA_HO1_expression 0.01  # HO1_expression (HO-1) (s^-1)
+define SIGMA_HO1_degradation 0.001  # HO1_degradation (HO-1 →) (s^-1)
+define SIGMA_Heme_Oxygenation 0.01  # Heme_Oxygenation (Heme → LIP) (s^-1)
+
+# Time definitions
+define TIME_START 0
+define TIME_STOP 100
+define TIME_STEP 0.002
+
+# Geometric definitions
+define CELL_LENGTH 20
+define CELL_RADIUS 20
+
+
+# General simulation setup
+random_seed 1
+dim 3
+boundaries x -CELL_LENGTH CELL_LENGTH
+boundaries y -CELL_LENGTH CELL_LENGTH
+boundaries z -CELL_LENGTH CELL_LENGTH
+frame_thickness 0
+time_start TIME_START
+time_stop TIME_STOP 
+time_step TIME_STEP
+
+
+# Define species
+species Hamp Fe-FT FT FT1 HO-1 Heme LIP Fpn IRP Tf-Fe_intercell TfR Tf-Fe-TfR1 HFE HFE-TfR Tf-Fe-TfR2 2(Tf-Fe)-TfR1 2HFE-TfR 2HFE-TfR2 2(Tf-Fe)-TfR2 TfR2 Heme_intercell
+
+
+# Diffusion coefficients (estimated)
+difc LIP(solution) 89.37  # Diffusion coefficient in um^2/s
+difc TfR(solution) 7.81
+difc IRP(solution) 7.41
+difc Fpn(solution) 8.59
+difc Hamp(solution) 24.38
+difc HFE(solution) 10.19
+difc Tf-Fe_intercell(solution) 8.11
+difc Fe-FT(solution) 4.17
+difc Heme(solution) 40.14
+difc HO-1(solution) 10.8
+
+
+# Visual properties
+color LIP(solution) green
+color TfR(solution) red
+color IRP(solution) blue
+color Fpn(solution) yellow
+color Hamp(solution) magenta
+color HFE(solution) cyan
+color Fe-FT(solution) white
+color Heme(solution) orange
+color HO-1(solution) pink
+display_size LIP(solution) 2
+display_size TfR(solution) 2
+display_size IRP(solution) 2
+display_size Fe-FT(solution) 2
+display_size Tf-Fe_intercell(solution) 2
+
+
+# Reactions
+# =========
+# Bimolecular Reactions (Second-order rate constants)
+reaction Fpn_Export LIP + LIP -> Tf-Fe_intercell 1e6
+reaction HFE_TfR1_binding HFE + TfR -> HFE-TfR 5e5
+reaction TfR1_binding Tf-Fe_intercell + TfR -> Tf-Fe-TfR1 1e6
+reaction HFE_TfR2_binding HFE + TfR2 -> 2HFE-TfR2 1e6
+reaction TfR2_binding Tf-Fe_intercell + TfR2 -> Tf-Fe-TfR2 1e6
+reaction Ferritin_Iron_Binding LIP + FT -> Fe-FT 5e6
+reaction HFE_TfR1_binding_2 HFE-TfR + HFE -> 2HFE-TfR 5e5
+reaction TfR1_binding_2 Tf-Fe-TfR1 + Tf-Fe_intercell -> 2(Tf-Fe)-TfR1 1e6
+reaction TfR2_binding_2 Tf-Fe-TfR2 + Tf-Fe_intercell -> 2(Tf-Fe)-TfR2 1e6
+
+# Unimolecular Reactions (First-order rate constants)
+reaction TfR1_expression 0 -> TfR 1e-2
+reaction TfR1_degradation TfR -> 0 1e-3
+reaction Ferroportin_Expression 0 -> Fpn 1e-2
+reaction IRP_expression 0 -> IRP 1e-2
+reaction IRP_degradation IRP -> 0 1e-3
+reaction Fpn_degradation Fpn -> 0 1e-3
+reaction HFE_degradation HFE -> 0 1e-3
+reaction HFE_expression 0 -> HFE 1e-2
+reaction TfR2_expression 0 -> TfR2 1e-2
+reaction TfR2_degradation TfR2 -> 0 1e-3
+reaction Hepcidin_expression 0 -> Hamp 1e-2
+reaction Hamp_degradation Hamp -> 0 1e-3
+reaction TfR1_iron_internalisation 2(Tf-Fe)-TfR1 -> LIP + LIP + LIP + LIP + TfR 1e-2
+reaction TfR2_iron_internalisation 2(Tf-Fe)-TfR2 -> LIP + LIP + LIP + LIP + TfR2 1e-2
+reaction Ferritin_Iron_Release Fe-FT -> LIP + FT 1e-2
+reaction Ferritin_Internalised_Iron_Release FT1 -> LIP 1e-2
+reaction ferritin_expression 0 -> FT 1e-2
+reaction Ferritin_Degradation FT -> 0 1e-3
+reaction Ferritin_Degradation_Full FT1 -> LIP 1e-2
+reaction Heme_Uptake Heme_intercell -> Heme 1e-2
+reaction Heme_Export Heme -> Heme_intercell 1e-2
+reaction HO1_expression 0 -> HO-1 1e-2
+reaction HO1_degradation HO-1 -> 0 1e-3
+reaction Heme_Oxygenation Heme -> LIP 1e-2
+reaction outFlow LIP -> 0 1e-2
+
+
+# Set up the cell as a spherical boundary
+start_surface sphere_surface
+    action both all reflect
+    polygon both face
+    panel sphere 10 10 10  10  20 20  # Liver cell radius of 12 microns
+end_surface
+
+
+# Inside compartment
+start_compartment cell
+    surface sphere_surface
+    point 0 0 0
+end_compartment
+
+
+# Initialize Molecules in the sphere
+compartment_mol 100 LIP cell  # Initial LIP molecules
+compartment_mol 20 TfR cell  # (solution) cell  # Initial TfR molecules
+compartment_mol 15 Hamp cell  # (solution) cell  # Initial Hamp molecules
+compartment_mol 50 Fe-FT cell  # (solution) cell  # Initial Fe-FT molecules
+compartment_mol 50 FT cell  # (solution) cell  # Initial FT molecules
+compartment_mol 30 FT1 cell  # (solution) cell  # Initial FT1 molecules
+compartment_mol 10 HO-1 cell  # (solution) cell  # Initial HO-1 molecules
+compartment_mol 50 Heme cell  # (solution) cell  # Initial Heme molecules
+compartment_mol 100 Fpn cell  # (solution) cell  # Initial Fpn molecules
+compartment_mol 100 IRP cell  # (solution) cell  # Initial IRP molecules
+compartment_mol 20 Tf-Fe_intercell cell  # (solution) cell  # Initial Tf-Fe_intercell molecules
+compartment_mol 20 Tf-Fe-TfR1 cell  # (solution) cell  # Initial Tf-Fe-TfR1 molecules
+compartment_mol 50 HFE cell  # (solution) cell  # Initial HFE molecules
+compartment_mol 30 HFE-TfR cell  # (solution) cell  # Initial HFE-TfR molecules
+compartment_mol 20 Tf-Fe-TfR2 cell  # (solution) cell  # Initial Tf-Fe-TfR2 molecules
+compartment_mol 15 2(Tf-Fe)-TfR1 cell  # (solution) cell  # Initial 2(Tf-Fe)-TfR1 molecules
+compartment_mol 10 2HFE-TfR cell  # (solution) cell  # Initial 2HFE-TfR molecules
+compartment_mol 10 2HFE-TfR2 cell  # (solution) cell  # Initial 2HFE-TfR2 molecules
+compartment_mol 10 2(Tf-Fe)-TfR2 cell  # (solution) cell  # Initial 2(Tf-Fe)-TfR2 molecules
+compartment_mol 20 TfR2 cell  # (solution) cell  # Initial TfR2 molecules
+compartment_mol 20 Heme_intercell cell  # (solution) cell  # Initial Heme_intercell molecules
+
+
+# Output settings
+output_files model_out.txt
+cmd i 0 TIME_STOP 1 executiontime model_out.txt
+cmd i 0 TIME_STOP 1 listmols model_out.txt
+
+end_file

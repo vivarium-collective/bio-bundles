@@ -2,13 +2,15 @@
 
 # graphics opengl_good
 
+define TIME_STOP 100
+
 dim 2
 
 boundaries 0 0 20 r
 boundaries 1 0 20 r
 
 time_start 0
-time_stop 100
+time_stop TIME_STOP
 time_step 0.001
 
 species receptor ligand bound
@@ -31,11 +33,12 @@ reaction_log stdout rxn2 1
 mol 1 ligand u u
 mol 50 receptor u u
 
-output_files tracking_listmols.txt tracking_trackmol.txt
-cmd B echo stdout "listmols:\n"
-cmd B listmols tracking_listmols.txt
+output_files tracking_out.txt  # tracking_trackmol.txt
+# cmd B echo stdout "listmols:\n"
+cmd i 0 TIME_STOP 1 executiontime tracking_out.txt
+cmd i 0 TIME_STOP 1 listmols tracking_out.txt
 
-cmd N 100 trackmol 1 tracking_trackmol.txt
+# cmd N 100 trackmol 1 tracking_trackmol.txt
 
 
 end_file

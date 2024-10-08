@@ -2,8 +2,9 @@
 # This starts in pause mode; press space to unpause
 
 # graphics opengl
+define TIME_STOP 10000
 
-disable_threading
+# disable_threading
 dim 3
 max_species 6
 max_mol 300
@@ -25,7 +26,7 @@ color cyan 0 1 1
 difc all 3
 
 time_start 0
-time_stop 10000
+time_stop TIME_STOP
 time_step 0.01
 
 boundaries 0 -50 50 r
@@ -40,6 +41,9 @@ mol 50 magenta 20-20 u 40
 mol 50 cyan 40 40 -40
 
 # cmd b pause
+output_files molecule_out.txt
+cmd i 0 TIME_STOP 1 executiontime molecule_out.txt
+cmd i 0 TIME_STOP 1 listmols molecule_out.txt
 
 end_file
 

@@ -1,0 +1,111 @@
+# Smoldyn configuration file to model the Labile Iron Pool within a single liver cell.
+# Based on BIOMD0000000498 - Mitchell, Mendes PLoS Comput. Biol. 2013 Nov; 9(11): e1003299
+# Units: micron, second
+
+
+#Param definitions
+#=================
+define D_Fe2_ION 2.5  # 7e-2    #Diffusion coefficient for Fe2+ (um^2/s)
+define D_Ferritin 0.02  # 1e-4    #Diffusion coefficient for Ferritin (um^2/s)
+define D_Ferritin_Fe2_ION 0.01  # 1e-4   #Diffusion coefficient for bound Ferritin_Fe2+ (um^2/s)
+
+define SIGMA_D_Fe2_ION 0.7    #Fe2 binding coeff.
+define SIGMA_D_Ferritin 0.09    #Ferritin release coeff.
+
+define BINDING_RADIUS 0.01    #Binding radius for Fe2+ and Ferritin interaction (um)
+define BINDING_RATE 1e7    #Reaction rate for Fe2+ binding to Ferritin (s^-1)
+
+define CELL_RADIUS 12    #Cell radius (µm)
+define CELL_LENGTH 15    #Half of the cell length (µm)
+define CELL_LENGTH2 7.5    #Half of the cell length minus radius (µm)
+
+define INITIAL_Fe2_ION 100    #Number of Fe2+ ions - Simulation macrocontext: half of usual
+define INITIAL_FERRITIN 700    #Number of Ferritin molecules: half of usual
+define INITIAL_FERRITIN_Fe2_ION 200
+
+define TIME_STOP 500    #Stopping time (seconds)
+# define TIME_STEP 0.009    #Time step (s) <- ms
+define TIME_STEP 1e-2
+
+
+#Simulation setup
+#================
+random_seed 1
+dim 3
+boundaries 0 -CELL_LENGTH CELL_LENGTH
+boundaries 1 -CELL_RADIUS CELL_RADIUS
+boundaries 2 -CELL_RADIUS CELL_RADIUS
+# boundaries 0 -50 50 r
+# boundaries 1 -50 50 r
+# boundaries 2 -50 50 r
+frame_thickness 0
+time_start 0
+time_stop TIME_STOP
+time_step TIME_STEP
+accuracy 5
+molperbox 4
+
+
+#Define species
+#==============
+species Fe2_ION Ferritin Ferritin_Fe2_ION
+
+
+#Define molecules
+#================
+# molecule_lists list1 list2 list3
+# mol_list Fe2_ION list1
+# mol_list Ferritin list2
+# mol_list Ferritin_Fe2_ION list3
+
+
+#Diffusion coefficients
+#======================
+difc Fe2_ION(solution) D_Fe2_ION
+difc Ferritin(solution) D_Ferritin
+difc Ferritin_Fe2_ION(solution) D_Ferritin_Fe2_ION
+
+
+#Visual properties
+#=================
+color Fe2_ION(solution) green  #0 1 0    Fe2+ ions are green
+color Ferritin(solution) red  #1 0 0    Ferritin is red
+color Ferritin_Fe2_ION(solution) blue  #0 0 1   Iron-bound Ferritin is blue
+display_size Fe2_ION(solution) 5  #TODO: adjust this
+display_size Ferritin(solution) 7
+display_size Ferritin_Fe2_ION(solution) 7
+
+
+#Reactions
+#=========
+reaction bind_ferritin Fe2_ION(solution) + Ferritin(solution) -> Ferritin_Fe2_ION(solution) SIGMA_D_Fe2_ION  #binding reaction where Fe²⁺ binds to Ferritin
+binding_radius bind_ferritin 2
+product_placement rxn3 bounce
+# reaction release_ferritin Ferritin_Fe2_ION(solution) -> Fe2_ION(solution) + Ferritin(solution) SIGMA_D_Ferritin  #Iron release from Ferritin
+
+
+#Surface to represent cytoplasmic boundary
+#=========================================
+start_surface ball
+    polygon both face
+    panel sphere 10 10 10  10  20 20
+end_surface
+
+
+#Conditions/Initial States
+#=========================
+mol INITIAL_Fe2_ION Fe2_ION(solution) 0-10 0-10 0-10 
+# mol INITIAL_FERRITIN Ferritin(solution) -10--10 -10-0 -10-10
+# mol INITIAL_FERRITIN_Fe2_ION Ferritin_Fe2_ION -10 -15 -20  
+# surface_mol INITIAL_Fe2_ION Fe2_ION(up) ball sphere all
+
+
+#Output settings
+#===============
+output_files model_out.txt
+cmd i 0 TIME_STOP 1 executiontime model_out.txt
+cmd i 0 TIME_STOP 1 listmols model_out.txt
+# cmd b molcountheader lip_counts_out.txt
+# cmd a molcount lip_counts_out.txt
+
+end_file
