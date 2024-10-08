@@ -1,0 +1,11 @@
+From Blair Lyons, 10/19/2023:
+
+"""
+I played around with this data and I think it actually is in a reasonable enough range without messing with the scale factor, our new auto scaling feature still leaves the scale at 1. 
+
+For this data, you do need to provide radii for all the particles since the data ranges from -3 to 3, so a radius of 1 is not a good assumption. Ideally we want to use the particle size that Smoldyn used to calculate the trajectory, but unfortunately that data is not captured in Smoldyn output files so you have to provide it manually in the display data. We could update our default radius if this is a more normal range for Smoldyn data, I’ve only worked with a few example models so I’m not sure.
+
+I think the reason the particles were disappearing with smaller radii is that we were shading them too darkly. The shading ranges are based on the box size, and since it is 100 with the data ranging from -3 to 3, that was out of the range we were expecting. We’ve made some updates to our shading algorithm recently that fix this anyway and with this change you are able to see the particles even with a box size of 100. We’re working on releasing that on the main website by the end of this week (if you want to see what it will look like you can try loading the data at https://staging.simularium.allencell.org/viewer). But for now, it should already work if you change the box size to 10 and set the particle radii to their size from Smoldyn, which I’m guessing is somewhere around 0.01.
+
+Thanks for helping test things out! It seems like we should consider automatically finding better default values for the box size and maybe radii as well.
+"""

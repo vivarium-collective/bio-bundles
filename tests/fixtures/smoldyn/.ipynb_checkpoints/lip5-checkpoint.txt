@@ -16,11 +16,12 @@ define SIGMA_Ferritin_Iron_Release 0.01  # Ferritin_Iron_Release (Fe-FT → LIP 
 
 # Time params
 define TIME_START 0
-define TIME_STOP 5
+define TIME_STOP 10
 define TIME_STEP 0.002
 
 # Geometric params
-define CELL_RADIUS 20
+define CELL_RADIUS 40
+define CELL_LENGTH 40
 
 
 # General simulation setup
@@ -31,19 +32,20 @@ boundaries x -CELL_RADIUS CELL_RADIUS
 boundaries y -CELL_RADIUS CELL_RADIUS
 boundaries z -CELL_RADIUS CELL_RADIUS
 frame_thickness 0
-time_start 0
+time_start TIME_START
 time_stop TIME_STOP 
-time_step 0.002  # Time step size (s)
+time_step TIME_STEP  # Time step size (s)
 
 
-# Define species
-# ==============
+# Species specifications
+# ======================
 species LIP 
 species TfR 
 species Tf-Fe_intercell 
 species Fpn 
 species Fe-FT
 species FT
+species Tf-Fe-TfR1
 
 # Diffusion coefficients
 difc LIP(solution) 89.37
@@ -51,6 +53,7 @@ difc TfR(solution) 7.81
 difc Fpn(solution) 8.59
 difc Fe-FT(solution) 4.17
 difc Tf-Fe_intercell(solution) 8.11
+difc Tf-Fe-TfR1(solution) 6.30
 
 # Visual properties
 color LIP(solution) green
@@ -58,9 +61,17 @@ color TfR(solution) red
 color Fpn(solution) yellow
 color Fe-FT(solution) white
 color Tf-Fe_intercell(solution) orange
-display_size LIP(solution) 2
-display_size TfR(solution) 2
-display_size Fpn(solution) 2
+color FT(solution) blue
+color Tf-Fe-TfR1(solution) purple
+
+# Display sizes for each species (relative to LIP)
+display_size LIP(solution) 1           # LIP (smallest)
+display_size TfR(solution) 14.7        # TfR (transferrin receptor)
+display_size Tf-Fe_intercell(solution) 11.2  # Transferrin bound to iron
+display_size Fpn(solution) 10.3        # Fpn (ferroportin)
+display_size Fe-FT(solution) 20.3      # Ferritin-bound iron
+display_size FT(solution) 20.3         # Ferritin (without iron)
+display_size Tf-Fe-TfR1(solution) 13  # transferrin bound to iron and transferrin receptor 1
 
 
 # Reactions
@@ -82,7 +93,7 @@ reaction Ferritin_Iron_Release Fe-FT -> LIP + FT 1e-2
 start_surface sphere_surface
     action both all reflect
     polygon both face
-    panel sphere 10 10 10  10  20 20
+    panel sphere 0 0 0 CELL_RADIUS CELL_RADIUS CELL_RADIUS
 end_surface
 
 
@@ -102,6 +113,7 @@ compartment_mol 50 Fe-FT cell  # Initial Fe-FT molecules
 compartment_mol 50 FT cell  # Initial FT molecules
 compartment_mol 20 Tf-Fe_intercell cell  # Initial Tf-Fe_intercell molecules
 compartment_mol 100 Fpn cell  # Initial Fpn molecules
+compartment_mol 10 Tf-Fe-TfR1 cell  # Initial Tf-Fe-TfR1 molecules
 
 
 # Output settings
