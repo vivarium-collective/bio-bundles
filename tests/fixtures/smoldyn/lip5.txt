@@ -3,25 +3,25 @@
 
 # Definitions
 # ===========
-# Bimolecular reactions (second-order rate constants)
+# -- Bimolecular reactions (second-order rate constants)
 define SIGMA_Fpn_Export     1e6   # Fpn_Export (LIP + LIP → Tf-Fe_intercell) (um^3/s)
 define SIGMA_TfR1_binding    1e6   # TfR1_binding (Tf-Fe_intercell + TfR → Tf-Fe-TfR1) (um^3/s)
 define SIGMA_Ferritin_Iron_Binding 5e6  # Ferritin_Iron_Binding (LIP + FT → Fe-FT) (um^3/s)
 
-# Unimolecular reactions (first-order rate constants)
+# -- Unimolecular reactions (first-order rate constants)
 define SIGMA_TfR1_expression   0.01   # TfR1_expression (TfR) (s^-1)
 define SIGMA_TfR1_degradation  0.001  # TfR1_degradation (TfR →) (s^-1)
 define SIGMA_Ferroportin_Expression 0.01  # Ferroportin_Expression (Fpn) (s^-1)
 define SIGMA_Ferritin_Iron_Release 0.01  # Ferritin_Iron_Release (Fe-FT → LIP + FT) (s^-1)
 
-# Time params
+# -- Time params
 define TIME_START 0
-define TIME_STOP 10
-define TIME_STEP 0.002
+define TIME_STOP 100
+define TIME_STEP 0.01
 
-# Geometric params
-define CELL_RADIUS 40
-define CELL_LENGTH 40
+# -- Geometric params
+define CELL_RADIUS 20
+define CELL_LENGTH 20
 
 
 # General simulation setup
@@ -46,25 +46,67 @@ species Fpn
 species Fe-FT
 species FT
 species Tf-Fe-TfR1
+species DMT1
+species Hamp 
+species HFE
+species Fpn_degraded
+# species Heme
+# species HO-1
 
-# Diffusion coefficients
+# -- Molecule lists for optimization
+molecule_lists iron_metabolism_list transferrin_list ferroportin_list dmt1_list
+
+mol_list LIP iron_metabolism_list
+mol_list Fe-FT iron_metabolism_list
+mol_list FT iron_metabolism_list
+# mol_list Heme iron_metabolism_list
+# mol_list HO-1 iron_metabolism_list
+
+mol_list TfR transferrin_list
+mol_list Tf-Fe_intercell transferrin_list
+mol_list Tf-Fe-TfR1 transferrin_list
+
+mol_list Fpn ferroportin_list
+mol_list Fpn_degraded ferroportin_list
+mol_list Hamp ferroportin_list
+mol_list HFE ferroportin_list
+
+mol_list DMT1 dmt1_list
+
+max_mol 1000
+
+# -- Diffusion coefficients
 difc LIP(solution) 89.37
-difc TfR(solution) 7.81
-difc Fpn(solution) 8.59
-difc Fe-FT(solution) 4.17
-difc Tf-Fe_intercell(solution) 8.11
-difc Tf-Fe-TfR1(solution) 6.30
+difc TfR(solution) 0.4  # 7.81
+difc Fpn(solution) 0.5  # 8.59
+difc Fe-FT(solution) 0.1  # 4.17
+difc Tf-Fe_intercell(solution) 0.3  # 8.11
+difc Tf-Fe-TfR1(solution) 0.2  # 6.30
+difc DMT1(solution) 0.3  # µm^2/s
+difc Hamp(solution) 24.38
+difc HFE(solution) 10.19
+difc Fpn_degraded(solution) 2.5  # um^2/s
+# difc HO-1(solution) 10
+# difc Heme(solution) 40.14
+
 
 # Visual properties
-color LIP(solution) green
-color TfR(solution) red
-color Fpn(solution) yellow
-color Fe-FT(solution) white
-color Tf-Fe_intercell(solution) orange
-color FT(solution) blue
-color Tf-Fe-TfR1(solution) purple
+# =================
+# color LIP(solution) green
+# color TfR(solution) red
+# color Fpn(solution) yellow
+# color Fe-FT(solution) white
+# color Tf-Fe_intercell(solution) orange
+# color FT(solution) blue
+# color Tf-Fe-TfR1(solution) purple
+# color DMT1(solution) brown
+# color Hamp(solution) pink
+# color HFE(solution) black
+# color Fpn_degraded(solution) cyan
+# color HO-1(solution)
+# color Heme(solution)
 
-# Display sizes for each species (relative to LIP)
+# -- Display sizes for each species (relative to LIP)
 display_size LIP(solution) 1           # LIP (smallest)
 display_size TfR(solution) 14.7        # TfR (transferrin receptor)
 display_size Tf-Fe_intercell(solution) 11.2  # Transferrin bound to iron
@@ -72,20 +114,52 @@ display_size Fpn(solution) 10.3        # Fpn (ferroportin)
 display_size Fe-FT(solution) 20.3      # Ferritin-bound iron
 display_size FT(solution) 20.3         # Ferritin (without iron)
 display_size Tf-Fe-TfR1(solution) 13  # transferrin bound to iron and transferrin receptor 1
+display_size DMT1(solution) 8
+display_size Hamp(solution) 3
+display_size HFE(solution) 7
+display_size Fpn_degraded(solution) 9.0
+# display_size HO-1(solution) 7
+# display_size Heme(solution) 5
 
 
-# Reactions
-# =========
-# Bimolecular Reactions (Second-order rate constants)
+# Reactions TODO: 
+# ==============
+# -- Bimolecular Reactions (Second-order rate constants)
 reaction Fpn_Export LIP + LIP -> Tf-Fe_intercell 1e6
-reaction TfR1_binding Tf-Fe_intercell + TfR -> Tf-Fe-TfR1 1e6
-reaction Ferritin_Iron_Binding LIP + FT -> Fe-FT 5e6
+binding_radius Fpn_Export 0.8
 
-# Unimolecular Reactions (First-order rate constants)
+reaction TfR1_binding Tf-Fe_intercell + TfR -> Tf-Fe-TfR1 1e6
+binding_radius TfR1_binding 1.0
+
+reaction Iron_Uptake DMT1 + LIP -> Fe-FT 1e6
+binding_radius Iron_Uptake 0.8
+
+reaction Ferritin_Iron_Binding LIP + FT -> Fe-FT 5e6
+binding_radius Ferritin_Iron_Binding 1.2
+
+reaction Hamp_Fpn_binding Hamp + Fpn -> Fpn_degraded 1e6
+binding_radius Hamp_Fpn_binding 1.5
+
+# reaction Heme_degradation Heme + HO-1 -> LIP 1e-2
+# binding_radius Heme_degradation 1.3
+
+# -- Unimolecular Reactions (First-order rate constants)
 reaction TfR1_expression 0 -> TfR 1e-2
 reaction TfR1_degradation TfR -> 0 1e-3
+reaction Fpn_degradation Fpn -> Fpn_degraded 1e-3  # Add Fpn degradation
 reaction Ferroportin_Expression 0 -> Fpn 1e-2
 reaction Ferritin_Iron_Release Fe-FT -> LIP + FT 1e-2
+reaction Iron_Uptake DMT1 + LIP -> Fe-FT 1e6  # Simulate iron uptake into ferritin
+reaction HFE_expression 0 -> HFE 1e-2
+reaction HFE_degradation HFE -> 0 1e-3
+reaction Hamp_expression 0 -> Hamp 1e-2
+reaction Hamp_degradation Hamp -> 0 1e-3
+reaction Fpn_degradation2 Fpn_degraded -> 0 1e-3
+# reaction Heme_Uptake Heme_intercell -> Heme 1e-2
+# reaction Heme_Export Heme -> Heme_intercell 1e-2
+# reaction HO1_expression 0 -> HO-1 1e-2
+# reaction HO1_degradation HO-1 -> 0 1e-3
+# reaction Heme_Oxygenation Heme -> LIP 1e-2
 
 
 # Set up the cell as a spherical boundary
@@ -107,19 +181,25 @@ end_compartment
 
 # Initialize Molecules in the sphere
 # ==================================
-compartment_mol 100 LIP cell  # Initial LIP molecules
-compartment_mol 20 TfR cell  # Initial TfR molecules
-compartment_mol 50 Fe-FT cell  # Initial Fe-FT molecules
-compartment_mol 50 FT cell  # Initial FT molecules
-compartment_mol 20 Tf-Fe_intercell cell  # Initial Tf-Fe_intercell molecules
-compartment_mol 100 Fpn cell  # Initial Fpn molecules
-compartment_mol 10 Tf-Fe-TfR1 cell  # Initial Tf-Fe-TfR1 molecules
+compartment_mol 10 LIP cell  # Initial LIP molecules
+compartment_mol 10 TfR cell  # Initial TfR molecules
+compartment_mol 5 Fe-FT cell  # Initial Fe-FT molecules
+compartment_mol 5 FT cell  # Initial FT molecules
+compartment_mol 2 Tf-Fe_intercell cell  # Initial Tf-Fe_intercell molecules
+compartment_mol 10 Fpn cell  # Initial Fpn molecules
+compartment_mol 1 Tf-Fe-TfR1 cell  # Initial Tf-Fe-TfR1 molecules
+compartment_mol 3 DMT1 cell
+compartment_mol 2 Hamp cell
+compartment_mol 2 HFE cell
+compartment_mol 2 Fpn_degraded cell
+# compartment_mol 30 HO-1
+# compartment_mol 10 Heme
 
 
 # Output settings
 # ===============
 output_files model_out.txt
-cmd i 0 TIME_STOP 1 executiontime model_out.txt
-cmd i 0 TIME_STOP 1 listmols model_out.txt
+cmd i 0 TIME_STOP 2 executiontime model_out.txt
+cmd i 0 TIME_STOP 2 listmols model_out.txt
 
 end_file

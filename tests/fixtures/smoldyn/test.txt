@@ -1,0 +1,65 @@
+define TIME_STOP 500
+define CELL_RADIUS 20
+
+dim 3
+
+boundaries x 0 40
+boundaries y 0 40
+boundaries z 0 40
+
+frame_thickness 0
+
+time_start 0
+time_stop TIME_STOP
+time_step 0.005
+
+species A B C D E
+
+difc A(solution) 0.75
+difc B(solution) 1.0
+difc C(solution) 0.8
+difc D(solution) 1.1
+difc E(solution) 1.3
+
+display_size A(solution) 2
+display_size B(solution) 3
+display_size C(solution) 2
+display_size D(solution) 3
+display_size E(solution) 4
+
+reaction rxn1 A + B -> C 0.3
+
+reaction rxn2 C + D -> A 0.2
+
+reaction rxn3 A + D -> B + C 0.3
+binding_radius rxn3 1.2
+product_placement rxn3 bounce -2
+
+reaction rxn4 A + C -> E 1.3
+
+start_surface sphere_surface
+    action both all reflect
+    polygon both face
+    panel sphere 0 0 0 CELL_RADIUS CELL_RADIUS CELL_RADIUS
+end_surface
+
+start_compartment cell
+    surface sphere_surface
+    point 0 0 0
+end_compartment
+
+# mol 10 A(solution) 0-10 0-10 0-10 
+# mol 5 B(solution) 0-10 0-10 0-10 
+# mol 10 C(solution) 0-10 0-10 0-10 
+# mol 5 D(solution) 0-10 0-10 0-10 
+compartment_mol 10 A cell
+compartment_mol 10 B cell 
+compartment_mol 10 C cell
+compartment_mol 10 D cell 
+compartment_mol 5 E cell
+
+output_files test_out.txt
+cmd i 0 TIME_STOP 1 executiontime test_out.txt
+cmd i 0 TIME_STOP 1 listmols test_out.txt
+
+end_file

@@ -1,0 +1,72 @@
+# Smoldyn configuration file based on Caravagna2010.xml 
+
+
+define TIME_STOP 100
+define CELL_RADIUS 20
+define SIGMA_D 0.025
+
+dim 3
+
+boundaries x 0 40
+boundaries y 0 40
+boundaries z 0 40
+
+frame_thickness 0
+random_seed 1
+accuracy 5
+molperbox 4
+
+time_start 0
+time_stop TIME_STOP
+time_step 0.005
+
+species T E I
+
+difc T(solution) 0.3
+difc E(solution) 3.0
+difc I(solution) 20.0
+
+molecule_lists listT listE listI
+mol_list T(solution) listT
+mol_list E(solution) listE
+mol_list I(solution) listI
+
+display_size T(solution) 1
+display_size E(solution) 3
+display_size I(solution) 4
+
+reaction rxn1 I -> 0 10
+reaction rxn2 0 -> T 0.18
+reaction rxn3 T -> 0 3e-6
+reaction rxn4 0 -> E 0.02
+reaction rxn5 E -> 0 0.03
+reaction rxn6 0 -> I 0.000488
+
+reaction rxn7 E + T -> E + T 
+binding_radius rxn7 1.5
+product_placement rxn7 bounce
+reaction_probability rxn7 0.99
+
+start_surface sphere_surface
+    action both all reflect
+    # rate E fsoln front SIGMA_D
+    polygon both face
+    panel sphere 0 0 0 CELL_RADIUS CELL_RADIUS CELL_RADIUS
+end_surface
+
+start_compartment cell
+    surface sphere_surface
+    point 0 0 0
+end_compartment
+
+compartment_mol 10 I cell
+compartment_mol 10 E cell
+compartment_mol 10 T cell
+
+# mol 50 I(solution) 0-10 0-10 0-10
+# mol 50 E(solution) 10-20 10-20 10-20
+# mol 50 I(solution) 20-30 20-30 20-30
+
+output_files caravagna_out.txt
+cmd i 0 TIME_STOP 2 executiontime caravagna_out.txt
+cmd i 0 TIME_STOP 2 listmols caravagna_out.txt
