@@ -1,0 +1,137 @@
+# Smoldyn configuration file for modeling the cycle in which Fe²⁺ (LIP) binds to Ferritin (FT) as per BIOMD0000000498 (Mitchell, Mendes, 2013)
+# This cycle is orders of magnitutde faster than the rest of model reactions. This cycle has been separated to reduce stiffness
+# This model uses hydroxyl radical (•OH) as the primary reactive oxygen species
+
+
+# -- Param definitions
+define TIME_START 0
+define TIME_STOP 100
+define TIME_STEP 0.05
+define CELL_RADIUS 40
+define ROS_THRESHOLD 200
+
+
+# -- General simulation setup
+dim 3
+boundaries x -CELL_RADIUS CELL_RADIUS
+boundaries y -CELL_RADIUS CELL_RADIUS
+boundaries z -CELL_RADIUS CELL_RADIUS
+
+random_seed 1
+frame_thickness 0
+
+time_start TIME_START
+time_stop TIME_STOP
+time_step TIME_STEP
+
+accuracy 5
+molperbox 4
+
+
+# -- Species specifications for primary components
+species LIP  # Freely-floating Fe ferrous iron (labile iron pool)
+species FT  # Ferritin not yet bound with Fe
+species Fe-FT  # Fe that is bound to FT and ready to be used
+species FT1  # Internalized FT whose Fe stores has been used)
+species Lysosome  # membrane bound organelle
+
+# -- Species specifications relating to oxidative stress and ROS detoxification
+species ROS  # reactive oxygen species (hydroxyl radical)
+species H₂O₂  # hydrogen peroxide (both a signaling molecule AND a contributor to ROS production in fenton reaction)
+species OH⁻  # hydroxide iron byproduct of fenton reaction
+species Fe³⁺  # ferric iron byproduct of fenton reaction
+species SOD  # superoxide dismutase responsible for stage1 of ROS removal
+species Catalase  # enzyme responsible for fully detoxifying ROS 
+species H₂O  # water byproduct of Catalase reaction to clean up ROS
+species O₂  # same byproduct
+species Asc  # vitamin C reducing agent to convert ferric into ferrous iron ascorbate
+species DHA  # byproduct of ferric-ferrous iron conversion dehydroascorbate
+
+
+# -- Molecule lists TODO: in the full model, place these lists inside of ONE list called iron_metabolism
+molecule_lists list1 list2 list3 list4 list5 list6
+mol_list LIP list1
+mol_list FT list2
+mol_list Fe-FT list3
+mol_list FT1 list4
+mol_list Lysosome list5
+mol_list ROS list6
+
+
+# -- Diffusion coefficients
+difc LIP(solution) 0.75  # 89.37
+difc FT(solution) 0.05  
+difc Fe-FT(solution) 0.05  
+difc FT1(solution) 0.05  # 20.3
+difc Lysosome(solution) 0.005  # very slow cytoplasmic diffusion
+difc ROS(solution) 0.75  # very fast molecules
+
+
+# -- Visual properties
+display_size LIP(solution) 1
+display_size FT(solution) 3
+display_size Fe-FT(solution) 3
+display_size FT1(solution) 3
+display_size Lysosome(solution) 7
+display_size ROS(solution) 1
+
+
+# -- Reactions
+# Ferritin Iron Binding:
+# LIP + FT -> Fe-FT
+# Rate: 5e6 (μm³/s)
+# 
+# Iron release from ferritin 2:
+# Fe-FT + Lysosome -> LIP + FT1
+#
+# Used FT (FT1) going back to the state of FT
+# FT1 -> FT
+# Rate: 1e-2 (s⁻¹)
+#
+# ROS formation with same small prob
+#(fenton reaction) LIP + H₂O₂ -> Fe³⁺(ferric iron) + ROS(hydroxyl radical) + OH⁻(hydroxide ion) 1e6
+# binding_radius Fenton_Reaction 0.8
+# 
+# Ferritin Degradation (under oxidative stress) with same small prob:
+# Lysosome + FT1 -> 0  # when ROS > threshold
+# Rate: 1e-6 (s⁻¹)
+#
+# ROS degredation stage1 (could trigger the fenton reaction!)
+# ROS + SOD -> h2o2
+#
+# ROS degredation stage2
+# h2o2 + catalase -> h2o + o2
+#
+# Ferric-ferrous Fe conversion
+# Fe³⁺ + Asc → LIP + DHA
+#
+# Lysosomal degradation of ROS
+# ROS + Lysosome -> 0
+
+
+
+# -- Set up the cell as a spherical boundary
+start_surface sphere_surface
+    action both all reflect
+    polygon both face
+    panel sphere 0 0 0 CELL_RADIUS CELL_RADIUS CELL_RADIUS
+end_surface
+
+
+# -- Inside compartment
+start_compartment cell
+    surface sphere_surface
+    point 0 0 0
+end_compartment
+
+
+# -- Initialize Molecules in the sphere
+# compartment_mol 10 LIP cell  # Initial LIP molecules
+
+
+# -- Output settings
+output_files model_out.txt
+cmd i 0 TIME_STOP 2 executiontime model_out.txt
+cmd i 0 TIME_STOP 2 listmols model_out.txt
+
+end_file
