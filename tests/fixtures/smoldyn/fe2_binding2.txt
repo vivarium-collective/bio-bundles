@@ -1,6 +1,10 @@
-# Smoldyn configuration file for modeling the cycle in which Fe²⁺ (LIP) binds to Ferritin (FT) as per BIOMD0000000498 (Mitchell, Mendes, 2013)
-# This cycle is orders of magnitutde faster than the rest of model reactions. This cycle has been separated to reduce stiffness
-# This model uses hydroxyl radical (•OH) as the primary reactive oxygen species
+# Smoldyn configuration file for modeling the particlar inner-cell cycle in which Fe²⁺ (LIP) binds to Ferritin (FT) as per BIOMD0000000498 (Mitchell, Mendes, 2013)
+# Author: Alexander A. Patrie 10/2024
+
+# - This cycle is orders of magnitutde faster than the rest of model reactions. This cycle has been separated to reduce stiffness
+# - This model uses hydroxyl radical (•OH) and superoxide anion as the primary reactive oxygen species
+# - This model relates specifically to the distribution/use of ferrous iron internally within the cell itself.
+# - TODO: create another model/process relating specifically to Fe export (hamp(hepcidin), fpn(ferroportin), etc).
 
 
 # -- Param definitions
@@ -8,7 +12,14 @@ define TIME_START 0
 define TIME_STOP 100
 define TIME_STEP 0.05
 define CELL_RADIUS 40
-define ROS_THRESHOLD 200
+define ROS1_THRESHOLD 200
+define ROS2_THRESHOLD 500
+
+
+define P_D 0.09  # large protein complexes (FT, etc) difc
+define E_D 0.2  # enzyme (Catalase, etc) difc
+define SMOL_D 0.8  # small molecules difc
+define O_D 0.005  # lysosomic (organelle) difc
 
 
 # -- General simulation setup
@@ -28,49 +39,80 @@ accuracy 5
 molperbox 4
 
 
-# -- Species specifications for primary components
+# -- Metabolism
 species LIP  # Freely-floating Fe ferrous iron (labile iron pool)
 species FT  # Ferritin not yet bound with Fe
-species Fe-FT  # Fe that is bound to FT and ready to be used
-species FT1  # Internalized FT whose Fe stores has been used)
+species Fe-FT  # Fe that is bound to ferritin and ready to be used
+species FT1  # Internalized ferritin whose Fe stores has been used)
 species Lysosome  # membrane bound organelle
 
-# -- Species specifications relating to oxidative stress and ROS2 detoxification
-species ROS  # reactive oxygen species (hydroxyl radical)
+# -- Oxidative stress and ROS detoxification
+species ROS1  # reactive oxygen species (•OH hydroxyl radical)
 species ROS2  # reactive oxygen species (O₂⁻ superoxide anion)
-species H₂O₂  # hydrogen peroxide (both a signaling molecule AND a contributor to ROS production in fenton reaction)
-species OH⁻  # hydroxide iron byproduct of fenton reaction
 species SOD  # superoxide dismutase responsible for stage1 of ROS2 removal
-species Catalase  # enzyme responsible for fully detoxifying ROS2 
-species H₂O  # water byproduct of Catalase reaction to clean up ROS2
+species Catalase  # enzyme responsible for fully detoxifying ROS2
+species H₂O₂  # hydrogen peroxide (both a signaling molecule AND a contributor to ROS production in fenton reaction)
+species H₂O  # water byproduct of ROS2 detoxification
 species O₂  # same byproduct
+species OH⁻  # hydroxide ion byproduct of fenton reaction
 
-# -- Species specifications relating into ferric-ferrous iron conversion
+# -- Iron reduction
 species Fe³⁺  # ferric iron byproduct of fenton reaction
-species Asc  # vitamin C reducing agent to convert ferric into ferrous iron ascorbate
-species DHA  # byproduct of ferric-ferrous iron conversion dehydroascorbate
+species Asc  # anti-oxidant vitamin C reducing agent to convert ferric into ferrous iron ascorbate
+species DHA  # anti-oxidant byproduct of ferric-ferrous iron conversion dehydroascorbate
 
 
-# -- Molecule lists TODO: in the full model, place these lists inside of ONE list called iron_metabolism
+# -- Molecule lists TODO: in the full model, place these lists inside of ONE list called iron_metabolism which determines the overall stiffness
 molecule_lists iron_metabolism oxidative_stress iron_reduction
+
+mol_list LIP iron_metabolism
+mol_list FT iron_metabolism
+mol_list Fe-FT iron_metabolism
+mol_list FT1 iron_metabolism
+mol_list Lysosome iron_metabolism
+
+mol_list ROS1 oxidative_stress
+mol_list ROS2 oxidative_stress
+mol_list SOD oxidative_stress
+mol_list Catalase oxidative_stress
+mol_list H₂O₂ oxidative_stress
+mol_list H₂O oxidative_stress
+mol_list O₂ oxidative_stress
+mol_list OH⁻ oxidative_stress
+
+mol_list Fe³⁺ iron_reduction
+mol_list Asc iron_reduction
+mol_list DHA iron_reduction
 
 
 # -- Diffusion coefficients
-difc LIP(solution) 0.75  # 89.37
-difc FT(solution) 0.05  
-difc Fe-FT(solution) 0.05  
-difc FT1(solution) 0.05  # 20.3
-difc Lysosome(solution) 0.005  # very slow cytoplasmic diffusion
-difc ROS(solution) 0.75  # very fast molecules
+difc LIP(solution) SMOL_D  # 89.37
+difc FT(solution) P_D  
+difc Fe-FT(solution) P_D  
+difc FT1(solution) P_D  # 20.3
+difc Lysosome(solution) O_D  # very slow cytoplasmic diffusion
+
+difc ROS1(solution) SMOL_D  # very fast *OH (hydroxyl) 
+difc ROS2(solution) SMOL_D  # very fast O₂⁻ (superoxide anion)
+difc SOD(solution) E_D
+difc Catalase(solution) E_D
+difc H₂O₂(solution) SMOL_D
+difc H₂O(solution) SMOL_D
+difc O₂(solution) SMOL_D
+difc OH⁻(solution) SMOL_D
+
+difc Fe³⁺(solution) SMOL_D
+difc Asc(solution) SMOL_D
+difc DHA(solution) SMOL_D
 
 
 # -- Visual properties
-display_size LIP(solution) 1
-display_size FT(solution) 3
-display_size Fe-FT(solution) 3
-display_size FT1(solution) 3
-display_size Lysosome(solution) 7
-display_size ROS(solution) 1
+# display_size LIP(solution) 1
+# display_size FT(solution) 3
+# display_size Fe-FT(solution) 3
+# display_size FT1(solution) 3
+# display_size Lysosome(solution) 7
+# display_size ROS(solution) 1
 
 
 # -- Reactions
@@ -93,10 +135,10 @@ display_size ROS(solution) 1
 # Lysosome + FT1 -> 0  # when ROS > threshold
 # Rate: 1e-6 (s⁻¹)
 #
-# ROS degredation stage1 (could trigger the fenton reaction!)
-# ROS + SOD -> h2o2
+# ROS2 degredation stage1 (could trigger the fenton reaction!)
+# ROS2 + SOD -> h2o2
 #
-# ROS degredation stage2
+# ROS2 degredation stage2
 # h2o2 + catalase -> h2o + o2
 #
 # Ferric-ferrous Fe conversion
@@ -108,16 +150,25 @@ display_size ROS(solution) 1
 
 
 # -- Set up the cell as a spherical boundary
-start_surface sphere_surface
+start_surface membrane
     action both all reflect
     polygon both face
     panel sphere 0 0 0 CELL_RADIUS CELL_RADIUS CELL_RADIUS
+
+    # rate MinD_ATP fsoln front SIGMA_D
+    # polygon both edge
+    # panel cylinder -L_PARAM2 0 0 L_PARAM2 0 0 -R 20 10 cyl0
+    # panel hemi -L_PARAM2 0 0 -R 1 0 0 20 5 hemi0
+    # panel hemi L_PARAM2 0 0 -R -1 0 0 20 5 hemi1
+    # neighbors cyl0 hemi0 hemi1
+    # neighbors hemi0 cyl0
+    # neighbors hemi1 cyl0
 end_surface
 
 
 # -- Inside compartment
-start_compartment cell
-    surface sphere_surface
+start_compartment cytoplasm
+    surface membrane
     point 0 0 0
 end_compartment
 
