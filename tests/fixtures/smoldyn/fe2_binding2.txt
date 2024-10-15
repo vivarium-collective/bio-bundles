@@ -35,27 +35,24 @@ species Fe-FT  # Fe that is bound to FT and ready to be used
 species FT1  # Internalized FT whose Fe stores has been used)
 species Lysosome  # membrane bound organelle
 
-# -- Species specifications relating to oxidative stress and ROS detoxification
+# -- Species specifications relating to oxidative stress and ROS2 detoxification
 species ROS  # reactive oxygen species (hydroxyl radical)
+species ROS2  # reactive oxygen species (O₂⁻ superoxide anion)
 species H₂O₂  # hydrogen peroxide (both a signaling molecule AND a contributor to ROS production in fenton reaction)
 species OH⁻  # hydroxide iron byproduct of fenton reaction
-species Fe³⁺  # ferric iron byproduct of fenton reaction
-species SOD  # superoxide dismutase responsible for stage1 of ROS removal
-species Catalase  # enzyme responsible for fully detoxifying ROS 
-species H₂O  # water byproduct of Catalase reaction to clean up ROS
+species SOD  # superoxide dismutase responsible for stage1 of ROS2 removal
+species Catalase  # enzyme responsible for fully detoxifying ROS2 
+species H₂O  # water byproduct of Catalase reaction to clean up ROS2
 species O₂  # same byproduct
+
+# -- Species specifications relating into ferric-ferrous iron conversion
+species Fe³⁺  # ferric iron byproduct of fenton reaction
 species Asc  # vitamin C reducing agent to convert ferric into ferrous iron ascorbate
 species DHA  # byproduct of ferric-ferrous iron conversion dehydroascorbate
 
 
 # -- Molecule lists TODO: in the full model, place these lists inside of ONE list called iron_metabolism
-molecule_lists list1 list2 list3 list4 list5 list6
-mol_list LIP list1
-mol_list FT list2
-mol_list Fe-FT list3
-mol_list FT1 list4
-mol_list Lysosome list5
-mol_list ROS list6
+molecule_lists iron_metabolism oxidative_stress iron_reduction
 
 
 # -- Diffusion coefficients
