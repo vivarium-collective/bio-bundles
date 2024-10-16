@@ -11,7 +11,7 @@
 # -- Param definitions
 define TIME_START 0
 define TIME_STOP 100
-define TIME_STEP 0.05
+define TIME_STEP 0.005
 define CELL_RADIUS 40
 
 define L_PARAM 5  # half of cell l
@@ -46,8 +46,8 @@ time_start TIME_START
 time_stop TIME_STOP
 time_step TIME_STEP
 
-#accuracy 5
-#molperbox 4
+accuracy 5
+molperbox 4
 
 
 # -- Metabolism
@@ -168,22 +168,23 @@ compartment_mol 80 Lysosome cytoplasm
 compartment_mol 30 SOD cytoplasm 
 compartment_mol 30 Catalase cytoplasm
 compartment_mol 40 Asc cytoplasm
+compartment_mol 10 DHA cytoplasm 
 
-# compartment_mol 10 FT1 cytoplasm 
-# compartment_mol 10 ROS1 cytoplasm 
-# compartment_mol 10 ROS2 cytoplasm 
-# compartment_mol 10 H2O2 cytoplasm 
-# compartment_mol 10 H₂O cytoplasm 
-# compartment_mol 10 O₂ cytoplasm 
-# compartment_mol 10 OH cytoplasm 
-# compartment_mol 10 Fe3 cytoplasm 
-# compartment_mol 10 Asc cytoplasm 
-# compartment_mol 10 DHA cytoplasm 
+compartment_mol 10 FT1 cytoplasm 
+compartment_mol 10 ROS1 cytoplasm 
+compartment_mol 10 ROS2 cytoplasm 
+compartment_mol 1 H2O2 cytoplasm 
+compartment_mol 100 H2O cytoplasm 
+compartment_mol 100 O2 cytoplasm 
+compartment_mol 10 OH cytoplasm 
+compartment_mol 1 Fe3 cytoplasm 
+compartment_mol 2 ROS1 cytoplasm
+compartment_mol 2 ROS2 cytoplasm
 
 
 # -- Output settings
 output_files model_out.txt
-cmd i 0 TIME_STOP 5 executiontime model_out.txt
-cmd i 0 TIME_STOP 5 listmols model_out.txt
+cmd i 0 TIME_STOP 1 executiontime model_out.txt
+cmd i 0 TIME_STOP 1 listmols model_out.txt
 
 end_file
