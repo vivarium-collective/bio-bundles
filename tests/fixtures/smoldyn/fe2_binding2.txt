@@ -10,9 +10,8 @@
 
 # -- Param definitions
 define TIME_START 0
-define TIME_STOP 100
-define TIME_STEP 0.005
-define CELL_RADIUS 40
+define TIME_STOP 500
+define TIME_STEP 0.002
 
 define L_PARAM 5  # half of cell l
 define L_PARAM2 4.8  # half of cell length minus radius
