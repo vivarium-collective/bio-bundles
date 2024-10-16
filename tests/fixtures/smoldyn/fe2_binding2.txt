@@ -10,12 +10,13 @@
 
 # -- Param definitions
 define TIME_START 0
-define TIME_STOP 500
-define TIME_STEP 0.002
+define TIME_STOP 1000
+define TIME_STEP 0.001
 
-define L_PARAM 15  # half of cell l
-define L_PARAM2 5 # half of cell length minus radius
-define R 10  # cell radius
+define L_PARAM 30  # half of cell l
+define L_PARAM2 10 # half of cell length minus radius
+define R 20  # cell radius
+define UNBINDRAD 1.0
 
 define ROS1_THRESHOLD 501  # *OH is more damaging than O2- TODO: make this threshold subscribe-able to the Lysosomes
 define ROS2_THRESHOLD 1001
@@ -120,27 +121,32 @@ difc DHA(solution) SMOL_D
 
 # -- Reactions(Binding, internalization, and release)
 reaction mtbl1 LIP(solution) + FT(solution) -> Fe-FT(solution) SIGMA_B  # iron binding to ferritin
+
 reaction mtbl2 Fe-FT(solution) + Lysosome(solution) -> LIP(solution) + FT1(solution) SIGMA_E  # iron release
+product_placement mtbl2 unbindrad UNBINDRAD
+
 reaction mtbl3 FT1(solution) -> FT(solution) SIGMA_NS  # namespace change of FT1 to FT which will then be re-used
+
 
 # -- Reactions(Oxidative stress)
 reaction stress1 LIP(solution) + H2O2(solution) -> Fe3(solution) + ROS1(solution) + OH(solution) SIGMA_HR  # creation of hydroxl radical
 reaction stress2 FT1(solution) + Lysosome(solution) -> 0 SIGMA_D  # lysosomic degredation of FT1, which in turn reduces the amount of FT
 
+
 # -- Reactions(ROS2 detox)
 reaction detox1 ROS2(solution) + SOD(solution) -> H2O2(solution) SIGMA_E  # ROS2 detox stage I
+
 reaction detox2 H2O2(solution) + Catalase(solution) -> H2O(solution) + O2(solution) SIGMA_E  # ROS2 detox stage II
+product_placement detox2 unbindrad UNBINDRAD
+
 
 # -- Reactions(iron reduction in response to ferric iron production from stress1)
 reaction redux Fe3(solution) + Asc(solution) -> LIP(solution) + DHA(solution) SIGMA_B  # from ferric to ferrous
+product_placement redux unbindrad UNBINDRAD
 
 
 # -- Set up the cell as a spherical boundary
 start_surface membrane
-    # action both all reflect
-    # polygon both face
-    # panel sphere 0 0 0 R R R 
-
     # rate <SPEC NAME> fsoln front <k>
     action both all reflect
     polygon both edge

@@ -1,0 +1,40 @@
+dim 3
+
+define L_PARAM 15  # half of cell l
+define L_PARAM2 5 # half of cell length minus radius
+define R 10  # cell radius
+
+species rabbit
+species fox 
+
+difc rabbit(solution) 100
+difc fox(solution) 100
+
+color rabbit 1 0 0
+color fox 0 1 0
+display_size rabbit 2
+display_size fox 3
+
+molecule_lists rlist flist
+mol_list rabbit(solution) rlist
+mol_list fox(solution) flist
+
+time_start 0
+time_stop 100
+time_step 0.001
+
+boundaries 0 -L_PARAM L_PARAM
+boundaries 1 -R R
+boundaries 2 -R R
+
+mol 1000 rabbit u u u
+mol 1000 fox u u u
+
+reaction r1 rabbit -> rabbit + rabbit 10
+reaction r2 rabbit + fox -> fox + fox 8000
+reaction r3 fox -> 0 10
+
+output_files lotvoltout.txt
+cmd i 0 TIME_STOP 1 executiontime lotvoltout.txt
+cmd i 0 TIME_STOP 1 listmols lotvoltout.txt
+end_file
