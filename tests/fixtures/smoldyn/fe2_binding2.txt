@@ -13,9 +13,9 @@ define TIME_START 0
 define TIME_STOP 1000
 define TIME_STEP 0.001
 
-define L_PARAM 30  # half of cell l
-define L_PARAM2 10 # half of cell length minus radius
-define R 20  # cell radius
+define L_PARAM 15  # half of cell l
+define L_PARAM2 5 # half of cell length minus radius
+define R 10  # cell radius
 define UNBINDRAD 1.0
 
 define ROS1_THRESHOLD 501  # *OH is more damaging than O2- TODO: make this threshold subscribe-able to the Lysosomes
@@ -26,11 +26,11 @@ define E_D 0.2  # enzyme (Catalase, etc) difc
 define SMOL_D 0.8  # small molecules difc
 define O_D 0.005  # lysosomic (organelle) difc
 
-define SIGMA_B 0.07  # k for binding rxns
+define SIGMA_B 0.6 # k for binding rxns
 define SIGMA_D 0.03  # k for degredation rxns
 define SIGMA_E 0.05  # k for enzymatic rxns (avg)
-define SIGMA_NS 1.0  # k for namespace conversion (FT1 -> FT)
-define SIGMA_HR 0.2  # k for highly reactive rxns (stress2)
+define SIGMA_NS 0.2  # k for namespace conversion (FT1 -> FT)
+define SIGMA_HR 0.8  # k for highly reactive rxns (stress2)
 
 
 # -- General simulation setup
@@ -66,13 +66,13 @@ species H2O2  # hydrogen peroxide (both a signaling molecule AND a contributor t
 species H2O  # water byproduct of ROS2 detoxification
 species O2  # same byproduct
 species OH  # hydroxide ion byproduct of fenton reaction
-# species Memb  # cell membrane(fixed in place)
-# species Memb_damaged  # damaged cell membrane (replaces Memb instance)
+species Memb  # cell membrane(fixed in place)
+species Memb_damaged  # damaged cell membrane (replaces Memb instance)
 
 # -- Iron reduction
-species Fe3  # ferric iron byproduct of fenton reaction
-species Asc  # anti-oxidant vitamin C reducing agent to convert ferric into ferrous iron ascorbate
-species DHA  # anti-oxidant byproduct of ferric-ferrous iron conversion dehydroascorbate
+# species Fe3  # ferric iron byproduct of fenton reaction
+# species Asc  # anti-oxidant vitamin C reducing agent to convert ferric into ferrous iron ascorbate
+# species DHA  # anti-oxidant byproduct of ferric-ferrous iron conversion dehydroascorbate
 
 
 # -- Molecule lists TODO: in the full model, place these lists inside of ONE list called iron_metabolism which determines the overall stiffness
@@ -93,9 +93,9 @@ mol_list H2O(solution) oxidative_stress
 mol_list O2(solution) oxidative_stress
 mol_list OH(solution) oxidative_stress
 
-mol_list Fe3(solution) iron_reduction
-mol_list Asc(solution) iron_reduction
-mol_list DHA(solution) iron_reduction
+# mol_list Fe3(solution) iron_reduction
+# mol_list Asc(solution) iron_reduction
+# mol_list DHA(solution) iron_reduction
 
 
 # -- Diffusion coefficients
@@ -114,15 +114,16 @@ difc H2O(solution) SMOL_D
 difc O2(solution) SMOL_D
 difc OH(solution) SMOL_D
 
-difc Fe3(solution) SMOL_D
-difc Asc(solution) SMOL_D
-difc DHA(solution) SMOL_D
+# difc Fe3(solution) SMOL_D
+# difc Asc(solution) SMOL_D
+# difc DHA(solution) SMOL_D
 
 
 # -- Reactions(Binding, internalization, and release)
 reaction mtbl1 LIP(solution) + FT(solution) -> Fe-FT(solution) SIGMA_B  # iron binding to ferritin
 
-reaction mtbl2 Fe-FT(solution) + Lysosome(solution) -> LIP(solution) + FT1(solution) SIGMA_E  # iron release
+reaction mtbl2 Fe-FT(solution) + Lysosome(solution) -> LIP(solution) + FT1(solution)  # SIGMA_E  # iron release
+binding_radius mtbl2 SIGMA_E
 product_placement mtbl2 unbindrad UNBINDRAD
 
 reaction mtbl3 FT1(solution) -> FT(solution) SIGMA_NS  # namespace change of FT1 to FT which will then be re-used
@@ -130,19 +131,19 @@ reaction mtbl3 FT1(solution) -> FT(solution) SIGMA_NS  # namespace change of FT1
 
 # -- Reactions(Oxidative stress)
 reaction stress1 LIP(solution) + H2O2(solution) -> Fe3(solution) + ROS1(solution) + OH(solution) SIGMA_HR  # creation of hydroxl radical
-reaction stress2 FT1(solution) + Lysosome(solution) -> 0 SIGMA_D  # lysosomic degredation of FT1, which in turn reduces the amount of FT
+reaction stress2 FT1(solution) + Lysosome(solution) -> 0 0.08  # SIGMA_D  # lysosomic degredation of FT1, which in turn reduces the amount of FT
 
 
 # -- Reactions(ROS2 detox)
-reaction detox1 ROS2(solution) + SOD(solution) -> H2O2(solution) SIGMA_E  # ROS2 detox stage I
+# reaction detox1 ROS2(solution) + SOD(solution) -> H2O2(solution) SIGMA_E  # ROS2 detox stage I
 
-reaction detox2 H2O2(solution) + Catalase(solution) -> H2O(solution) + O2(solution) SIGMA_E  # ROS2 detox stage II
-product_placement detox2 unbindrad UNBINDRAD
+# reaction detox2 H2O2(solution) + Catalase(solution) -> H2O(solution) + O2(solution) SIGMA_E  # ROS2 detox stage II
+# product_placement detox2 unbindrad UNBINDRAD
 
 
 # -- Reactions(iron reduction in response to ferric iron production from stress1)
-reaction redux Fe3(solution) + Asc(solution) -> LIP(solution) + DHA(solution) SIGMA_B  # from ferric to ferrous
-product_placement redux unbindrad UNBINDRAD
+# reaction redux Fe3(solution) + Asc(solution) -> LIP(solution) + DHA(solution) SIGMA_B  # from ferric to ferrous
+# product_placement redux unbindrad UNBINDRAD
 
 
 # -- Set up the cell as a spherical boundary
@@ -167,25 +168,23 @@ end_compartment
 
 
 # -- Initialize Molecules in the cytplsm
-compartment_mol 50 LIP cytoplasm 
-compartment_mol 70 FT cytoplasm 
-compartment_mol 10 Fe-FT cytoplasm 
-compartment_mol 80 Lysosome cytoplasm 
-compartment_mol 30 SOD cytoplasm 
-compartment_mol 30 Catalase cytoplasm
-compartment_mol 40 Asc cytoplasm
-compartment_mol 10 DHA cytoplasm 
-
-compartment_mol 10 FT1 cytoplasm 
-compartment_mol 10 ROS1 cytoplasm 
-compartment_mol 10 ROS2 cytoplasm 
-compartment_mol 1 H2O2 cytoplasm 
-compartment_mol 100 H2O cytoplasm 
-compartment_mol 100 O2 cytoplasm 
+compartment_mol 300 LIP cytoplasm 
+compartment_mol 700 FT cytoplasm 
+compartment_mol 150 Fe-FT cytoplasm 
+compartment_mol 100 FT1 cytoplasm
+compartment_mol 600 Lysosome cytoplasm 
+compartment_mol 30 ROS1 cytoplasm 
+compartment_mol 30 ROS2 cytoplasm
+compartment_mol 10 H2O2 cytoplasm 
+compartment_mol 10 H2O cytoplasm
+compartment_mol 10 O2 cytoplasm 
 compartment_mol 10 OH cytoplasm 
-compartment_mol 1 Fe3 cytoplasm 
-compartment_mol 2 ROS1 cytoplasm
-compartment_mol 2 ROS2 cytoplasm
+
+# compartment_mol 30 SOD cytoplasm 
+# compartment_mol 30 Catalase cytoplasm
+# compartment_mol 40 Asc cytoplasm
+# compartment_mol 10 DHA cytoplasm 
+# compartment_mol 1 Fe3 cytoplasm 
 
 
 # -- Output settings
