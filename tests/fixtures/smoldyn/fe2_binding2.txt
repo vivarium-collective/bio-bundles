@@ -18,7 +18,7 @@ define L_PARAM 5  # half of cell l
 define L_PARAM2 4.8  # half of cell length minus radius
 define R 1.2  # cell radius
 
-define ROS1_THRESHOLD 501  # *OH is more damaging than O2-
+define ROS1_THRESHOLD 501  # *OH is more damaging than O2- TODO: make this threshold subscribe-able to the Lysosomes
 define ROS2_THRESHOLD 1001
 
 define P_D 0.09  # large protein complexes (FT, etc) difc
@@ -123,10 +123,12 @@ difc DHA(solution) SMOL_D
 reaction mtbl1 LIP + FT -> Fe-FT SIGMA_B  # iron binding to ferritin
 reaction mtbl2 Fe-FT + Lysosome -> LIP + FT1 SIGMA_E  # iron release
 reaction mtbl3 FT1 -> FT SIGMA_NS  # namespace change of FT1 to FT which will then be re-used
+reaction_probability mtbl3 SIGMA_NS
 
 # -- Reactions(Oxidative stress)
 reaction stress1 LIP + H₂O₂ -> Fe³⁺ + ROS1 + OH⁻ SIGMA_HR  # creation of hydroxl radical
 reaction stress2 FT1 + Lysosome -> 0 SIGMA_D  # lysosomic degredation of FT1, which in turn reduces the amount of FT
+reaction_production stress2 SIGMA_NS
 
 # -- Reactions(ROS2 detox)
 reaction detox1 ROS2 + SOD -> H₂O₂ SIGMA_E  # ROS2 detox stage I
