@@ -13,9 +13,9 @@ define TIME_START 0
 define TIME_STOP 500
 define TIME_STEP 0.002
 
-define L_PARAM 5  # half of cell l
-define L_PARAM2 4.8  # half of cell length minus radius
-define R 1.2  # cell radius
+define L_PARAM 15  # half of cell l
+define L_PARAM2 5 # half of cell length minus radius
+define R 10  # cell radius
 
 define ROS1_THRESHOLD 501  # *OH is more damaging than O2- TODO: make this threshold subscribe-able to the Lysosomes
 define ROS2_THRESHOLD 1001
@@ -142,6 +142,7 @@ start_surface membrane
     # panel sphere 0 0 0 R R R 
 
     # rate <SPEC NAME> fsoln front <k>
+    action both all reflect
     polygon both edge
     panel cylinder -L_PARAM2 0 0 L_PARAM2 0 0 -R 20 10 cyl0
     panel hemi -L_PARAM2 0 0 -R 1 0 0 20 5 hemi0
