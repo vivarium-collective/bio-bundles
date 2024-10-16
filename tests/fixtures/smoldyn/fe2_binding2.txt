@@ -120,38 +120,36 @@ difc DHA(solution) SMOL_D
 
 
 # -- Reactions(Binding, internalization, and release)
-reaction mtbl1 LIP + FT -> Fe-FT SIGMA_B  # iron binding to ferritin
-reaction mtbl2 Fe-FT + Lysosome -> LIP + FT1 SIGMA_E  # iron release
-reaction mtbl3 FT1 -> FT SIGMA_NS  # namespace change of FT1 to FT which will then be re-used
-# reaction_probability mtbl3 SIGMA_NS
+reaction mtbl1 LIP(solution) + FT(solution) -> Fe-FT(solution) SIGMA_B  # iron binding to ferritin
+reaction mtbl2 Fe-FT(solution) + Lysosome(solution) -> LIP(solution) + FT1(solution) SIGMA_E  # iron release
+reaction mtbl3 FT1(solution) -> FT(solution) SIGMA_NS  # namespace change of FT1 to FT which will then be re-used
 
 # -- Reactions(Oxidative stress)
-reaction stress1 LIP + H2O2 -> Fe3 + ROS1 + OH SIGMA_HR  # creation of hydroxl radical
-reaction stress2 FT1 + Lysosome -> 0 SIGMA_D  # lysosomic degredation of FT1, which in turn reduces the amount of FT
-# reaction_production stress2 SIGMA_NS
+reaction stress1 LIP(solution) + H2O2(solution) -> Fe3(solution) + ROS1(solution) + OH(solution) SIGMA_HR  # creation of hydroxl radical
+reaction stress2 FT1(solution) + Lysosome(solution) -> 0 SIGMA_D  # lysosomic degredation of FT1, which in turn reduces the amount of FT
 
 # -- Reactions(ROS2 detox)
-reaction detox1 ROS2 + SOD -> H2O2 SIGMA_E  # ROS2 detox stage I
-reactions detox2 H2O2 + Catalase -> H2O + O2 SIGMA_E  # ROS2 detox stage II
+reaction detox1 ROS2(solution) + SOD(solution) -> H2O2(solution) SIGMA_E  # ROS2 detox stage I
+reaction detox2 H2O2(solution) + Catalase(solution) -> H2O(solution) + O2(solution) SIGMA_E  # ROS2 detox stage II
 
 # -- Reactions(iron reduction in response to ferric iron production from stress1)
-reaction redux Fe3 + Asc -> LIP + DHA SIGMA_B  # from ferric to ferrous
+reaction redux Fe3(solution) + Asc(solution) -> LIP(solution) + DHA(solution) SIGMA_B  # from ferric to ferrous
 
 
 # -- Set up the cell as a spherical boundary
 start_surface membrane
-    action both all reflect
-    polygon both face
-    panel sphere 0 0 0 R R R 
+    # action both all reflect
+    # polygon both face
+    # panel sphere 0 0 0 R R R 
 
     # rate <SPEC NAME> fsoln front <k>
-    # polygon both edge
-    # panel cylinder -L_PARAM2 0 0 L_PARAM2 0 0 -R 20 10 cyl0
-    # panel hemi -L_PARAM2 0 0 -R 1 0 0 20 5 hemi0
-    # panel hemi L_PARAM2 0 0 -R -1 0 0 20 5 hemi1
-    # neighbors cyl0 hemi0 hemi1
-    # neighbors hemi0 cyl0
-    # neighbors hemi1 cyl0
+    polygon both edge
+    panel cylinder -L_PARAM2 0 0 L_PARAM2 0 0 -R 20 10 cyl0
+    panel hemi -L_PARAM2 0 0 -R 1 0 0 20 5 hemi0
+    panel hemi L_PARAM2 0 0 -R -1 0 0 20 5 hemi1
+    neighbors cyl0 hemi0 hemi1
+    neighbors hemi0 cyl0
+    neighbors hemi1 cyl0
 end_surface
 
 
@@ -163,13 +161,13 @@ end_compartment
 
 
 # -- Initialize Molecules in the cytplsm
-# compartment_mol 50 LIP cytoplasm 
-# compartment_mol 70 FT cytoplasm 
-# compartment_mol 10 Fe-FT cytoplasm 
-# compartment_mol 80 Lysosome cytoplasm 
-# compartment_mol 30 SOD cytoplasm 
-# compartment_mol 30 Catalase cytoplasm
-# compartment_mol 40 Asc cytoplasm
+compartment_mol 50 LIP cytoplasm 
+compartment_mol 70 FT cytoplasm 
+compartment_mol 10 Fe-FT cytoplasm 
+compartment_mol 80 Lysosome cytoplasm 
+compartment_mol 30 SOD cytoplasm 
+compartment_mol 30 Catalase cytoplasm
+compartment_mol 40 Asc cytoplasm
 
 # compartment_mol 10 FT1 cytoplasm 
 # compartment_mol 10 ROS1 cytoplasm 
